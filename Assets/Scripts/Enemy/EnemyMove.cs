@@ -5,36 +5,36 @@ using UnityEngine;
 
 public class EnemyMove : MonoBehaviour
 {
-
-    [SerializeField]
-    float speed;
-
-    private Animator animator;
-
-    private Boolean isMoving;
+    private bool isMoving;
+    private GameObject tower;
+    private DataEnemy dataEnemy;
 
     // Start is called before the first frame update
     void Start()
     {
         isMoving = true;
+        tower = GameObject.FindGameObjectWithTag("Tower");
+        dataEnemy = gameObject.GetComponent<DataEnemy>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        float posX = transform.position.x - speed * Time.deltaTime;
-        transform.position = new Vector3(posX, transform.position.y, -Camera.main.transform.position.z);
-   
+        float distanceBetweenEnemyAndTower = Vector3.Distance(gameObject.transform.position, tower.transform.position);
+
+        if(distanceBetweenEnemyAndTower < dataEnemy.distanceBetweenEnemyAndTower)
+        {
+            isMoving = false;
+        } else
+        {
+            isMoving = true;
+        }
+        if (isMoving)
+        {
+            float posX = transform.position.x - dataEnemy.speed * Time.deltaTime;
+            transform.position = new Vector3(posX, transform.position.y, -Camera.main.transform.position.z);
+        }
+           
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(collision.gameObject.tag == "Tower")
-        {
-            //TODO: xử lý attack trụ
-        } else if(collision.gameObject.tag == "Hero")
-        {
-            //TODO: xử lý attack hero
-        }
-    }
 }
